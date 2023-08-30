@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_30_162042) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_30_163024) do
   create_table "categories", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.string "title", null: false
@@ -80,6 +80,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_162042) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "tag_mappings", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "posts_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["posts_id"], name: "index_tag_mappings_on_posts_id"
+    t.index ["tag_id"], name: "index_tag_mappings_on_tag_id"
+  end
+
+  create_table "tags", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "admin", default: false, null: false
@@ -94,4 +109,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_162042) do
   add_foreign_key "posts", "countries", column: "countries_id"
   add_foreign_key "posts", "regions", column: "regions_id"
   add_foreign_key "posts", "users"
+  add_foreign_key "tag_mappings", "posts", column: "posts_id"
+  add_foreign_key "tag_mappings", "tags"
 end
