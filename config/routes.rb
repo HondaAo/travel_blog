@@ -4,11 +4,17 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   namespace 'api' do
-    namespace 'user' do
-      resources :posts
-    end
+    resources :posts
+    resources :countries, only: [:index, :show]
+    resources :cities, only: [:index, :show]
+    resources :regions, only: [:index, :show]
+
     namespace 'admin' do
-      resources :admin
+      get 'draft_list' => 'post#draft_show'
+      put 'approve' => 'post#approve'
+      post 'create_countries' => 'country#create'
+      post 'create_city' => 'city#create'
+      post 'create_region' => 'regin#create'
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_30_163024) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_15_155057) do
   create_table "categories", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.string "title", null: false
@@ -30,8 +30,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_163024) do
 
   create_table "comments", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "users_id", null: false
+    t.bigint "posts_id", null: false
+    t.string "comment", null: false
+    t.integer "response_id", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["posts_id"], name: "fk_rails_581572ac1f"
     t.index ["users_id"], name: "fk_rails_1e28850acb"
   end
 
@@ -52,22 +56,50 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_163024) do
     t.index ["posts_id"], name: "index_images_on_posts_id"
   end
 
+  create_table "link_categories", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_link_categories_on_category_id"
+    t.index ["post_id"], name: "index_link_categories_on_post_id"
+  end
+
+  create_table "link_cities", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "city_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["city_id"], name: "index_link_cities_on_city_id"
+    t.index ["post_id"], name: "index_link_cities_on_post_id"
+  end
+
+  create_table "link_countries", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "country_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["country_id"], name: "index_link_countries_on_country_id"
+    t.index ["post_id"], name: "index_link_countries_on_post_id"
+  end
+
+  create_table "link_regions", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "region_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_link_regions_on_post_id"
+    t.index ["region_id"], name: "index_link_regions_on_region_id"
+  end
+
   create_table "posts", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", null: false
     t.text "body", null: false
-    t.bigint "countries_id", null: false
-    t.bigint "regions_id", null: false
-    t.bigint "cities_id", null: false
-    t.bigint "categories_id", null: false
     t.datetime "from"
     t.datetime "to"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["categories_id"], name: "index_posts_on_categories_id"
-    t.index ["cities_id"], name: "index_posts_on_cities_id"
-    t.index ["countries_id"], name: "index_posts_on_countries_id"
-    t.index ["regions_id"], name: "index_posts_on_regions_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -97,17 +129,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_163024) do
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
     t.string "name", null: false
+    t.string "email", null: false
+    t.string "password_digest", null: false
     t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "comments", "posts", column: "posts_id"
   add_foreign_key "comments", "users", column: "users_id"
   add_foreign_key "images", "posts", column: "posts_id"
-  add_foreign_key "posts", "categories", column: "categories_id"
-  add_foreign_key "posts", "cities", column: "cities_id"
-  add_foreign_key "posts", "countries", column: "countries_id"
-  add_foreign_key "posts", "regions", column: "regions_id"
+  add_foreign_key "link_categories", "categories"
+  add_foreign_key "link_categories", "posts"
+  add_foreign_key "link_cities", "cities"
+  add_foreign_key "link_cities", "posts"
+  add_foreign_key "link_countries", "countries"
+  add_foreign_key "link_countries", "posts"
+  add_foreign_key "link_regions", "posts"
+  add_foreign_key "link_regions", "regions"
   add_foreign_key "posts", "users"
   add_foreign_key "tag_mappings", "posts", column: "posts_id"
   add_foreign_key "tag_mappings", "tags"
